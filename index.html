@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[Your Name] — DSA Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET ─── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px;scroll-behavior:smooth}
+
+/* ─── TOKENS ─── */
+:root{
+  --white:#ffffff;
+  --bg:#f8f6f1;
+  --bg2:#f0ece3;
+  --bg3:#e8e3d8;
+  --card:#ffffff;
+  --ink:#1a1714;
+  --ink2:#3a3530;
+  --muted:#6b6560;
+  --muted2:#9a9590;
+  --accent:#b5451e;
+  --accent-h:#913616;
+  --accent-l:rgba(181,69,30,0.08);
+  --gold:#b08820;
+  --border:#ddd9d0;
+  --border2:#ccc8be;
+  --shadow:0 1px 3px rgba(26,23,20,0.08),0 4px 16px rgba(26,23,20,0.06);
+  --shadow-md:0 2px 8px rgba(26,23,20,0.1),0 8px 32px rgba(26,23,20,0.08);
+  --pad:clamp(1.25rem,5vw,4rem);
+  --nav:64px;
+  --radius:4px;
+}
+
+/* ─── BASE ─── */
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  font-weight:300;
+  line-height:1.7;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+
+/* ─── NAV ─── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  height:var(--nav);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 var(--pad);
+  background:rgba(248,246,241,0.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  transition:box-shadow .3s;
+}
+#nav.scrolled{box-shadow:0 2px 20px rgba(26,23,20,0.08)}
+.logo{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink2);font-weight:500;cursor:pointer;
+  background:none;border:none;padding:0;
+}
+.logo em{color:var(--accent);font-style:normal}
+.nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+.nav-links button{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--muted);background:none;border:none;cursor:pointer;
+  transition:color .2s;padding:0;
+}
+.nav-links button:hover,.nav-links button.active{color:var(--accent)}
+.nav-btn{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--white);background:var(--accent);
+  border:none;cursor:pointer;
+  padding:.5rem 1.2rem;border-radius:var(--radius);
+  transition:background .2s;
+}
+.nav-btn:hover{background:var(--accent-h)}
+.burger{display:none;flex-direction:column;gap:4px;background:none;border:none;cursor:pointer;padding:4px}
+.burger span{display:block;width:20px;height:1.5px;background:var(--ink);transition:.3s}
+.mob-menu{
+  display:none;position:fixed;top:var(--nav);left:0;right:0;
+  background:var(--card);border-bottom:1px solid var(--border);
+  padding:1.5rem var(--pad);flex-direction:column;gap:1rem;z-index:998;
+  box-shadow:var(--shadow-md);
+}
+.mob-menu.open{display:flex}
+.mob-menu button{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);background:none;border:none;cursor:pointer;
+  text-align:left;padding:.3rem 0;transition:color .2s;
+}
+.mob-menu button:hover,.mob-menu button.active{color:var(--accent)}
+
+/* ─── APP SHELL ─── */
+#app{padding-top:var(--nav);min-height:100vh}
+.page{display:none;animation:fadeUp .4s ease both}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── REVEAL ─── */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}.d4{transition-delay:.28s}
+
+/* ─── SHARED COMPONENTS ─── */
+.pg-wrap{max-width:1200px;margin:0 auto;padding:0 var(--pad)}
+
+.pg-hero{
+  padding:5rem var(--pad) 4rem;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.pg-hero-ghost{
+  position:absolute;right:0;bottom:-1rem;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(6rem,18vw,14rem);font-weight:900;
+  color:transparent;
+  -webkit-text-stroke:1px rgba(26,23,20,0.05);
+  line-height:1;user-select:none;letter-spacing:-.03em;
+  pointer-events:none;
+}
+.crumb{
+  display:flex;align-items:center;gap:.4rem;
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--muted2);
+  margin-bottom:1.2rem;
+}
+.crumb button{color:var(--muted2);background:none;border:none;cursor:pointer;font:inherit;transition:color .2s}
+.crumb button:hover{color:var(--accent)}
+.crumb .sep{color:var(--border2)}
+.crumb .here{color:var(--accent)}
+.pg-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.5rem,6vw,5rem);
+  font-weight:700;line-height:.95;letter-spacing:-.02em;
+  color:var(--ink);
+}
+.pg-title i{color:var(--accent)}
+.pg-sub{margin-top:1rem;font-size:.95rem;color:var(--muted);font-style:italic;max-width:50ch}
+
+.sec{padding:4rem var(--pad);border-bottom:1px solid var(--border)}
+.sec-tag{
+  display:inline-flex;align-items:center;gap:.6rem;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--accent);
+  margin-bottom:1.8rem;
+}
+.sec-tag::before{content:'';width:1.2rem;height:1px;background:var(--accent)}
+.sec-h{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.6rem,3vw,2.4rem);
+  font-weight:700;letter-spacing:-.02em;line-height:1.05;
+  color:var(--ink);margin-bottom:2rem;
+}
+
+/* chip / tag */
+.chip{
+  display:inline-block;
+  padding:.2rem .65rem;
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--border2);color:var(--muted);
+  border-radius:var(--radius);
+}
+.chip-a{border-color:rgba(181,69,30,.3);color:var(--accent);background:var(--accent-l)}
+
+/* ─── MARQUEE ─── */
+.marquee-wrap{overflow:hidden;padding:.8rem 0;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.marquee-track{display:flex;gap:3rem;animation:scroll 25s linear infinite;width:max-content}
+.marquee-item{
+  font-family:'JetBrains Mono',monospace;font-size:.62rem;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);
+  white-space:nowrap;display:flex;align-items:center;gap:3rem;
+}
+.marquee-item::after{content:'·';color:var(--accent)}
+@keyframes scroll{to{transform:translateX(-50%)}}
+
+/* ─── FOOTER ─── */
+#foot{
+  padding:1.5rem var(--pad);
+  background:var(--bg2);border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1rem;
+}
+.foot-copy{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2)}
+.foot-links{display:flex;gap:1.5rem}
+.foot-links button{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);background:none;border:none;cursor:pointer;transition:color .2s}
+.foot-links button:hover{color:var(--accent)}
+
+/* ════════ HOME ════════ */
+.hero{
+  min-height:calc(100vh - var(--nav));
+  display:grid;grid-template-columns:1fr 1fr;
+  border-bottom:1px solid var(--border);
+}
+.hero-l{
+  padding:5rem var(--pad) 5rem 5rem;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  border-right:1px solid var(--border);
+  background:var(--bg);
+  position:relative;overflow:hidden;
+}
+.hero-ghost{
+  position:absolute;left:0;bottom:-2rem;
+  font-family:'Playfair Display',serif;font-size:28vw;font-weight:900;
+  color:transparent;-webkit-text-stroke:1px rgba(26,23,20,0.03);
+  line-height:1;pointer-events:none;user-select:none;
+}
+.hero-tag{
+  display:flex;align-items:center;gap:.8rem;
+  margin-bottom:2rem;
+  opacity:0;animation:fadeUp .6s ease .1s forwards;
+}
+.hero-tag-line{width:2rem;height:1px;background:var(--accent)}
+.hero-tag-text{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+.hero-name{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(4rem,9vw,8rem);font-weight:900;
+  line-height:.88;letter-spacing:-.03em;
+  margin-bottom:2rem;
+  opacity:0;animation:fadeUp .7s ease .2s forwards;
+}
+.hero-name .n1{display:block;color:var(--ink)}
+.hero-name .n2{display:block;color:var(--accent);font-style:italic}
+.hero-desc{
+  font-size:.95rem;color:var(--muted);line-height:1.85;max-width:40ch;
+  margin-bottom:2.5rem;
+  opacity:0;animation:fadeUp .6s ease .35s forwards;
+}
+.hero-pills{
+  display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:3rem;
+  opacity:0;animation:fadeUp .6s ease .45s forwards;
+}
+.pill{
+  padding:.3rem .85rem;border:1px solid var(--border2);
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);background:var(--card);
+  border-radius:var(--radius);transition:all .2s;
+}
+.pill:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
+.hero-cta{
+  display:inline-flex;align-items:center;gap:.7rem;
+  font-family:'JetBrains Mono',monospace;font-size:.68rem;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--white);background:var(--accent);
+  border:none;cursor:pointer;
+  padding:.85rem 2rem;border-radius:var(--radius);
+  transition:background .25s;width:fit-content;
+  opacity:0;animation:fadeUp .6s ease .55s forwards;
+}
+.hero-cta:hover{background:var(--accent-h)}
+.hero-r{
+  padding:5rem 5rem 5rem var(--pad);
+  display:flex;flex-direction:column;justify-content:space-between;
+  background:var(--bg);
+}
+.stats-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:1px;background:var(--border);
+  border:1px solid var(--border);
+  margin-bottom:2.5rem;
+  opacity:0;animation:fadeUp .6s ease .4s forwards;
+}
+.stat{background:var(--card);padding:1.8rem 1.6rem;transition:background .2s}
+.stat:hover{background:var(--bg)}
+.stat-n{
+  font-family:'Playfair Display',serif;
+  font-size:2.8rem;font-weight:700;line-height:1;
+  color:var(--accent);margin-bottom:.3rem;
+}
+.stat-l{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2)}
+.hero-quote{
+  border-left:2px solid var(--accent);padding-left:1.2rem;
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:1.05rem;color:var(--muted);line-height:1.7;
+  opacity:0;animation:fadeUp .6s ease .65s forwards;
+}
+.page-nav-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);
+  gap:1px;background:var(--border);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.pnc{
+  background:var(--card);padding:2.5rem 1.8rem;
+  display:flex;flex-direction:column;
+  cursor:pointer;border:none;text-align:left;
+  position:relative;overflow:hidden;transition:background .25s;
+  color:var(--ink);
+}
+.pnc::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--accent);transform:scaleX(0);transform-origin:left;
+  transition:transform .3s;
+}
+.pnc:hover{background:var(--bg)}
+.pnc:hover::after{transform:scaleX(1)}
+.pnc-n{
+  font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:700;
+  color:transparent;-webkit-text-stroke:1px var(--border2);
+  line-height:1;margin-bottom:1.2rem;transition:color .25s,-webkit-text-stroke .25s;
+}
+.pnc:hover .pnc-n{color:var(--accent);-webkit-text-stroke:1px transparent}
+.pnc-tag{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.35rem}
+.pnc-name{font-size:.82rem;font-weight:500;color:var(--ink2);flex:1;line-height:1.3}
+.pnc-arr{font-size:1rem;color:var(--accent);align-self:flex-end;margin-top:1.2rem;transform:rotate(-45deg);transition:transform .25s}
+.pnc:hover .pnc-arr{transform:rotate(0)}
+
+/* ════════ ABOUT ════════ */
+.about-body-grid{
+  display:grid;grid-template-columns:3fr 2fr;
+  gap:4rem;padding:4rem var(--pad);border-bottom:1px solid var(--border);
+}
+.about-prose{font-size:.95rem;color:var(--ink2);line-height:1.95}
+.about-prose p+p{margin-top:1.2rem}
+.about-prose strong{color:var(--ink);font-weight:600;border-bottom:1px solid rgba(181,69,30,.25)}
+.pullquote{
+  margin:2.5rem 0;padding:1.5rem 1.8rem;
+  border-left:2px solid var(--accent);
+  background:var(--accent-l);border-radius:0 var(--radius) var(--radius) 0;
+}
+.pullquote p{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;color:var(--ink);line-height:1.5;font-style:italic}
+.about-sidebar{display:flex;flex-direction:column;gap:1px;background:var(--border);height:fit-content;border:1px solid var(--border)}
+.sib-card{background:var(--card);padding:1.1rem 1.4rem;transition:background .2s}
+.sib-card:hover{background:var(--bg)}
+.sib-lbl{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.3rem}
+.sib-val{font-size:.85rem;font-weight:500;color:var(--ink2)}
+.sib-val small{font-weight:300;color:var(--muted);font-size:.78rem}
+.domain-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.domain-card{background:var(--card);padding:2.5rem 2rem;transition:background .3s;border:1px solid transparent}
+.domain-card:hover{background:var(--bg)}
+.domain-icon{font-size:1.8rem;margin-bottom:.8rem}
+.domain-name{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:.5rem;color:var(--ink)}
+.domain-desc{font-size:.82rem;color:var(--muted);line-height:1.75}
+.tl-row{display:grid;grid-template-columns:11ch 1fr;gap:1.5rem;padding:1.3rem 0;border-bottom:1px solid var(--border);align-items:start}
+.tl-yr{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:500;color:var(--accent);padding-top:.2rem}
+.tl-title{font-size:.9rem;font-weight:600;color:var(--ink);margin-bottom:.15rem}
+.tl-sub{font-size:.75rem;color:var(--muted)}
+
+/* ════════ PROJECTS ════════ */
+.proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border)}
+.proj-card{
+  background:var(--card);padding:2.8rem 2.5rem;
+  position:relative;overflow:hidden;transition:background .25s;
+}
+.proj-card:hover{background:var(--bg)}
+.proj-card::before{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .35s;
+}
+.proj-card:hover::before{transform:scaleX(1)}
+.proj-card.wide{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+.proj-type{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.7rem}
+.proj-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;line-height:1.15;margin-bottom:.4rem;color:var(--ink)}
+.proj-period{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:1.1rem}
+.proj-desc{font-size:.84rem;color:var(--muted);line-height:1.8;margin-bottom:1.2rem}
+.proj-list{list-style:none;display:flex;flex-direction:column;gap:.45rem;margin-bottom:1.2rem}
+.proj-list li{font-size:.8rem;color:var(--ink2);padding-left:1.1rem;position:relative;line-height:1.6}
+.proj-list li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:.65rem}
+.proj-tags{display:flex;flex-wrap:wrap;gap:.3rem}
+.deb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.deb-card{background:var(--bg);padding:2.2rem 2rem;transition:background .25s}
+.deb-card:hover{background:var(--card)}
+.deb-icon{font-size:1.6rem;margin-bottom:.8rem}
+.deb-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:.25rem;color:var(--ink)}
+.deb-sub{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.7rem}
+.deb-desc{font-size:.8rem;color:var(--muted);line-height:1.75}
+.roles-list{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border)}
+.role-row{
+  background:var(--card);display:grid;
+  grid-template-columns:11ch 1.5rem 1fr auto;
+  gap:1.5rem;align-items:center;padding:1.4rem 2rem;transition:background .2s;
+}
+.role-row:hover{background:var(--bg)}
+.role-yr{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:500;color:var(--accent)}
+.role-ic{font-size:1rem}
+.role-title{font-size:.88rem;font-weight:600;color:var(--ink)}
+.role-org{font-size:.72rem;color:var(--muted);margin-top:.12rem}
+.role-badge{
+  padding:.15rem .55rem;font-family:'JetBrains Mono',monospace;
+  font-size:.55rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid rgba(181,69,30,.3);color:var(--accent);white-space:nowrap;
+  border-radius:var(--radius);
+}
+
+/* ════════ SKILLS ════════ */
+.skill-group{margin-bottom:3.5rem}
+.skill-group-h{
+  display:flex;align-items:baseline;gap:1.5rem;
+  padding-bottom:.8rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem;
+}
+.skill-group-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:var(--ink)}
+.skill-group-count{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted2)}
+.skill-rows{display:flex;flex-direction:column;gap:1rem}
+.skill-row{display:grid;grid-template-columns:20ch 1fr 3ch;align-items:center;gap:1.5rem}
+.skill-label{font-size:.83rem;color:var(--ink2)}
+.skill-track{height:2px;background:var(--border2);position:relative;overflow:hidden;border-radius:1px}
+.skill-bar{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),var(--gold));width:0;transition:width 1.1s cubic-bezier(.22,1,.36,1);border-radius:1px}
+.skill-row.in .skill-bar{width:var(--w)}
+.skill-val{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted2);text-align:right}
+.soft-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
+.soft-card{background:var(--card);padding:1.8rem 1.6rem;transition:background .25s}
+.soft-card:hover{background:var(--bg)}
+.soft-icon{font-size:1.5rem;margin-bottom:.6rem}
+.soft-name{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:.3rem;color:var(--ink)}
+.soft-desc{font-size:.76rem;color:var(--muted);line-height:1.7}
+.lang-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.lang-card{background:var(--bg2);padding:2.2rem 2rem}
+.lang-name{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;margin-bottom:.25rem;color:var(--ink)}
+.lang-level{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:.7rem}
+.lang-dots{display:flex;gap:.35rem}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border2)}
+.dot.on{background:var(--accent)}
+.tools-wrap{display:flex;flex-wrap:wrap;gap:.5rem}
+.tool{padding:.35rem .85rem;border:1px solid var(--border2);font-size:.72rem;color:var(--muted);border-radius:var(--radius);transition:all .2s;cursor:default}
+.tool:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
+
+/* ════════ SERVICE ════════ */
+.impact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border)}
+.impact-cell{background:var(--bg2);padding:2.8rem 2.5rem;text-align:center}
+.impact-n{font-family:'Playfair Display',serif;font-size:3rem;font-weight:700;line-height:1;color:var(--accent);margin-bottom:.35rem}
+.impact-l{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2)}
+.svc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border)}
+.svc-card{
+  background:var(--card);padding:2.8rem 2.5rem;
+  position:relative;overflow:hidden;transition:background .25s;
+}
+.svc-card:hover{background:var(--bg)}
+.svc-card::before{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:2px;
+  background:var(--accent);transform:scaleY(0);transform-origin:top;transition:transform .35s;
+}
+.svc-card:hover::before{transform:scaleY(1)}
+.svc-hrs{
+  font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:700;line-height:1;
+  color:transparent;-webkit-text-stroke:1px rgba(181,69,30,.2);
+  margin-bottom:.15rem;transition:color .25s,-webkit-text-stroke .25s;
+}
+.svc-card:hover .svc-hrs{color:var(--accent);-webkit-text-stroke:1px transparent}
+.svc-hrs-l{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted2);margin-bottom:1.3rem}
+.svc-title{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;margin-bottom:.25rem;color:var(--ink)}
+.svc-org{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:.9rem}
+.svc-desc{font-size:.82rem;color:var(--muted);line-height:1.8}
+.svc-period{margin-top:1.1rem;font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2)}
+.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.ref-quote{font-family:'Playfair Display',serif;font-size:clamp(1.1rem,3vw,1.7rem);font-weight:700;line-height:1.3;color:var(--ink)}
+.ref-quote em{font-style:italic;color:var(--accent)}
+.ref-body{font-size:.9rem;color:var(--muted);line-height:1.9;font-style:italic}
+.ref-body p+p{margin-top:.9rem}
+.via-row{display:grid;grid-template-columns:9ch 1fr 8ch;gap:1.5rem;align-items:center;padding:1.1rem 0;border-bottom:1px solid var(--border)}
+.via-yr{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:500;color:var(--accent)}
+.via-name{font-size:.88rem;font-weight:500;color:var(--ink)}
+.via-org-s{font-size:.72rem;color:var(--muted);margin-top:.12rem}
+.via-h{font-family:'JetBrains Mono',monospace;font-size:.7rem;font-weight:500;color:var(--muted2);text-align:right}
+
+/* ════════ AWARDS ════════ */
+.feat-aw{
+  display:grid;grid-template-columns:1fr 1fr;gap:5rem;
+  padding:4rem var(--pad);border-bottom:1px solid var(--border);align-items:center;
+}
+.feat-yr{font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.9rem}
+.feat-title{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,4vw,3rem);font-weight:700;letter-spacing:-.02em;line-height:1;margin-bottom:.7rem;color:var(--ink)}
+.feat-org{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:1.3rem}
+.feat-desc{font-size:.9rem;color:var(--muted);line-height:1.85}
+.aw-circle-wrap{display:flex;align-items:center;justify-content:center}
+.aw-circle{
+  width:250px;height:250px;border-radius:50%;
+  border:1px solid var(--border2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;position:relative;background:var(--bg2);
+}
+.aw-circle::before{
+  content:'';position:absolute;inset:-2px;border-radius:50%;
+  background:conic-gradient(var(--accent) 0deg,transparent 240deg);
+  -webkit-mask:radial-gradient(transparent 57%,black 58%);
+  mask:radial-gradient(transparent 57%,black 58%);
+  animation:spin 10s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.aw-circle-icon{font-size:2.5rem;margin-bottom:.4rem}
+.aw-circle-name{font-family:'Playfair Display',serif;font-size:.82rem;font-weight:600;color:var(--ink2);padding:0 1.2rem;line-height:1.4}
+.aw-list{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border)}
+.aw-row{
+  background:var(--card);display:grid;
+  grid-template-columns:9ch 1.4rem 1fr auto;
+  gap:1.8rem;align-items:center;padding:1.4rem 2rem;transition:background .2s;
+}
+.aw-row:hover{background:var(--bg)}
+.aw-yr{font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:500;color:var(--accent)}
+.aw-ic{font-size:1rem}
+.aw-name{font-size:.88rem;font-weight:600;color:var(--ink)}
+.aw-org{font-size:.72rem;color:var(--muted);margin-top:.12rem}
+.badge{padding:.15rem .6rem;font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;border-radius:var(--radius)}
+.bg{border:1px solid rgba(181,69,30,.3);color:var(--accent);background:var(--accent-l)}
+.bs{border:1px solid var(--border2);color:var(--muted);background:var(--bg2)}
+.recog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+.recog-card{background:var(--bg2);padding:2.2rem 2rem;transition:background .25s}
+.recog-card:hover{background:var(--card)}
+.recog-yr{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:.6rem}
+.recog-title{font-family:'Playfair Display',serif;font-size:1rem;font-weight:700;margin-bottom:.35rem;color:var(--ink)}
+.recog-body{font-size:.78rem;color:var(--muted);line-height:1.7}
+
+/* ════════ CONTACT ════════ */
+.contact-hero{
+  min-height:65vh;display:flex;flex-direction:column;justify-content:center;
+  padding:5rem var(--pad);border-bottom:1px solid var(--border);
+  background:var(--bg);position:relative;overflow:hidden;
+}
+.contact-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 60% at 15% 55%,rgba(181,69,30,.04) 0%,transparent 65%);
+  pointer-events:none;
+}
+.contact-hl{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.8rem,9vw,7rem);font-weight:900;
+  line-height:.88;letter-spacing:-.03em;margin-bottom:2.5rem;position:relative;
+}
+.contact-hl .c1{display:block;color:var(--ink)}
+.contact-hl .c2{display:block;font-style:italic;color:var(--muted2)}
+.contact-hl .c3{display:block;color:var(--accent)}
+.contact-sub{font-size:.95rem;color:var(--muted);font-style:italic;max-width:44ch;line-height:1.85;margin-bottom:2.8rem;position:relative}
+.contact-btns{display:flex;gap:.8rem;flex-wrap:wrap;position:relative}
+.cbtn{
+  display:inline-flex;align-items:center;gap:.6rem;
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+  padding:.8rem 1.6rem;border-radius:var(--radius);cursor:pointer;border:none;transition:all .2s;
+}
+.cbtn-p{background:var(--accent);color:var(--white)}
+.cbtn-p:hover{background:var(--accent-h)}
+.cbtn-o{border:1px solid var(--border2);color:var(--ink2);background:var(--card)}
+.cbtn-o:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
+.cc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border-bottom:1px solid var(--border)}
+.cc-card{
+  background:var(--card);padding:2.5rem;
+  display:flex;flex-direction:column;gap:.6rem;
+  text-decoration:none;color:var(--ink);transition:background .25s;
+  position:relative;
+}
+.cc-card::after{content:'↗';position:absolute;top:1.2rem;right:1.2rem;font-size:.9rem;color:var(--muted2);transition:all .2s}
+.cc-card:hover{background:var(--bg)}
+.cc-card:hover::after{color:var(--accent);transform:translate(2px,-2px)}
+.cc-icon{font-size:1.4rem}
+.cc-type{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent)}
+.cc-val{font-size:.9rem;font-weight:600;color:var(--ink)}
+.cc-hint{font-size:.75rem;color:var(--muted)}
+.ci-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;padding:4rem var(--pad);border-bottom:1px solid var(--border)}
+.ci-head{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;margin-bottom:1rem;color:var(--ink)}
+.ci-body{font-size:.88rem;color:var(--muted);line-height:1.85}
+.ci-body p+p{margin-top:.85rem}
+.ci-rows{display:flex;flex-direction:column;gap:.65rem;margin-top:1.4rem}
+.ci-row{display:flex;gap:1.2rem;align-items:baseline}
+.ci-lbl{font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted2);min-width:9ch}
+.ci-val{font-size:.83rem;color:var(--ink2)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1024px){
+  .hero{grid-template-columns:1fr}
+  .hero-l{padding:4rem var(--pad) 3rem;border-right:none;border-bottom:1px solid var(--border)}
+  .hero-ghost{display:none}
+  .hero-r{padding:3rem var(--pad)}
+  .page-nav-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:900px){
+  .nav-links,.nav-btn{display:none}
+  .burger{display:flex}
+  .about-body-grid{grid-template-columns:1fr;gap:2rem;padding:3rem var(--pad)}
+  .domain-grid,.deb-grid,.proj-grid,.svc-grid,.cc-grid,.lang-grid,.recog-grid{grid-template-columns:1fr}
+  .proj-card.wide{grid-column:1;grid-template-columns:1fr}
+  .impact-grid{grid-template-columns:repeat(2,1fr)}
+  .soft-grid{grid-template-columns:repeat(2,1fr)}
+  .feat-aw,.ci-grid{grid-template-columns:1fr;gap:2rem}
+  .aw-circle-wrap{display:none}
+  .ref-grid{grid-template-columns:1fr;gap:2rem}
+  .skill-row{grid-template-columns:13ch 1fr 3ch;gap:1rem}
+  .role-row{grid-template-columns:1fr;gap:.25rem}
+  .role-ic,.role-badge{display:none}
+  .aw-row{grid-template-columns:1fr;gap:.25rem}
+  .aw-ic,.badge{display:none}
+  .page-nav-grid{grid-template-columns:repeat(2,1fr)}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .tl-row,.via-row{grid-template-columns:1fr;gap:.2rem}
+  #foot{flex-direction:column;gap:.6rem;text-align:center}
+  .foot-links{flex-wrap:wrap;justify-content:center}
+}
+@media(max-width:520px){
+  .page-nav-grid{grid-template-columns:1fr}
+  .soft-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <button class="logo" data-p="home">[YN]<em>.</em></button>
+  <ul class="nav-links">
+    <li><button data-p="about">About</button></li>
+    <li><button data-p="projects">Projects</button></li>
+    <li><button data-p="skills">Skills</button></li>
+    <li><button data-p="service">Service</button></li>
+    <li><button data-p="awards">Awards</button></li>
+    <li><button data-p="contact">Contact</button></li>
+  </ul>
+  <button class="nav-btn" data-p="contact">Get in touch</button>
+  <button class="burger" id="burger"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="mob-menu" id="mobMenu">
+  <button data-p="home">Home</button>
+  <button data-p="about">About Me</button>
+  <button data-p="projects">Projects &amp; Experience</button>
+  <button data-p="skills">Skills</button>
+  <button data-p="service">Community Service</button>
+  <button data-p="awards">Awards</button>
+  <button data-p="contact">Contact</button>
+</div>
+
+<div id="app">
+
+<!-- ══════ HOME ══════ -->
+<div class="page" id="pg-home">
+  <section class="hero">
+    <div class="hero-l">
+      <div class="hero-ghost">YN</div>
+      <div class="hero-tag">
+        <div class="hero-tag-line"></div>
+        <span class="hero-tag-text">DSA Portfolio · JC 2025 · Singapore</span>
+      </div>
+      <h1 class="hero-name">
+        <span class="n1">[Your</span>
+        <span class="n2">Name]</span>
+      </h1>
+      <p class="hero-desc">Student leader, community builder &amp; competitive debater — applying via DSA in Community Leadership &amp; Debate.</p>
+      <div class="hero-pills">
+        <span class="pill">Community Leadership</span>
+        <span class="pill">Debate</span>
+        <span class="pill">Humanities</span>
+        <span class="pill">VIA Service</span>
+      </div>
+      <button class="hero-cta" data-p="about">View Portfolio →</button>
+    </div>
+    <div class="hero-r">
+      <div>
+        <div class="sec-tag" style="margin-bottom:1.2rem">At a glance</div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-n">4+</div><div class="stat-l">Years Leadership</div></div>
+        <div class="stat"><div class="stat-n">120h</div><div class="stat-l">Community Service</div></div>
+        <div class="stat"><div class="stat-n">8+</div><div class="stat-l">Debate Tournaments</div></div>
+        <div class="stat"><div class="stat-n">7</div><div class="stat-l">Awards &amp; Honours</div></div>
+      </div>
+      <blockquote class="hero-quote">"I don't lead to stand in front — I lead to bring others forward."</blockquote>
+    </div>
+  </section>
+
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item">Community Leadership</span>
+      <span class="marquee-item">Student Council</span>
+      <span class="marquee-item">Competitive Debate</span>
+      <span class="marquee-item">VIA &amp; Service</span>
+      <span class="marquee-item">Humanities</span>
+      <span class="marquee-item">DSA 2025</span>
+      <span class="marquee-item">Singapore JC</span>
+      <span class="marquee-item">Community Leadership</span>
+      <span class="marquee-item">Student Council</span>
+      <span class="marquee-item">Competitive Debate</span>
+      <span class="marquee-item">VIA &amp; Service</span>
+      <span class="marquee-item">Humanities</span>
+      <span class="marquee-item">DSA 2025</span>
+      <span class="marquee-item">Singapore JC</span>
+    </div>
+  </div>
+
+  <div class="page-nav-grid">
+    <button class="pnc reveal" data-p="about"><div class="pnc-n">01</div><div class="pnc-tag">Profile</div><div class="pnc-name">About Me</div><div class="pnc-arr">↗</div></button>
+    <button class="pnc reveal d1" data-p="projects"><div class="pnc-n">02</div><div class="pnc-tag">Projects</div><div class="pnc-name">Projects &amp; Experience</div><div class="pnc-arr">↗</div></button>
+    <button class="pnc reveal d2" data-p="skills"><div class="pnc-n">03</div><div class="pnc-tag">Abilities</div><div class="pnc-name">Skills</div><div class="pnc-arr">↗</div></button>
+    <button class="pnc reveal d3" data-p="service"><div class="pnc-n">04</div><div class="pnc-tag">VIA</div><div class="pnc-name">Community Service</div><div class="pnc-arr">↗</div></button>
+    <button class="pnc reveal d4" data-p="awards"><div class="pnc-n">05</div><div class="pnc-tag">Honours</div><div class="pnc-name">Awards &amp; Recognition</div><div class="pnc-arr">↗</div></button>
+  </div>
+</div>
+
+<!-- ══════ ABOUT ══════ -->
+<div class="page" id="pg-about">
+  <div class="pg-hero">
+    <div class="pg-hero-ghost">01</div>
+    <div class="crumb"><button data-p="home">Home</button><span class="sep"> / </span><span class="here">About Me</span></div>
+    <h1 class="pg-title">About <i>Me</i></h1>
+    <p class="pg-sub">Who I am, what drives me, and where I'm headed.</p>
+  </div>
+  <div class="about-body-grid">
+    <div class="about-prose reveal">
+      <p>I am a <strong>Secondary 4 student at [Your School]</strong>, driven by a deep belief that leadership is most powerful when it serves others. Over four years, I have sought roles that push me to grow — from organising school-wide events as Student Council Vice-President, to representing my school at national debate championships.</p>
+      <div class="pullquote"><p>"Leadership is not about being in charge — it is about taking care of those in your charge."</p></div>
+      <p>My journey in <strong>debate</strong> taught me to think critically under pressure, embrace multiple perspectives, and communicate with precision and conviction. These skills shape how I lead, how I listen, and how I approach every challenge.</p>
+      <p>Beyond school, I am committed to <strong>community service</strong> — volunteering at [Organisation] and co-founding a youth initiative that has reached over [X] beneficiaries. For me, leadership without service is incomplete.</p>
+      <p>In the <strong>humanities</strong>, I have developed genuine curiosity about history, social policy, and philosophy — interests that ground how I engage with the world and with people around me.</p>
+      <p>I am applying to JC via DSA under <strong>Community Leadership and Debate</strong>, seeking an environment that challenges me to think bigger and contribute more meaningfully to society.</p>
+    </div>
+    <div class="about-sidebar reveal d2">
+      <div class="sib-card"><div class="sib-lbl">Current School</div><div class="sib-val">[Your Secondary School]</div></div>
+      <div class="sib-card"><div class="sib-lbl">Applying To</div><div class="sib-val">[Target JC 1]<br><small>[Target JC 2]</small></div></div>
+      <div class="sib-card"><div class="sib-lbl">DSA Domain</div><div class="sib-val">Community Leadership<br><small>Debate</small></div></div>
+      <div class="sib-card"><div class="sib-lbl">O-Level Target</div><div class="sib-val">L1R5 ≤ [X]</div></div>
+      <div class="sib-card"><div class="sib-lbl">Interests</div><div class="sib-val">Philosophy · History<br><small>Public Policy · Debate</small></div></div>
+      <div class="sib-card"><div class="sib-lbl">Languages</div><div class="sib-val">English · [Mother Tongue]</div></div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-tag">DSA Domains</div>
+    <h2 class="sec-h">Why these domains?</h2>
+    <div class="domain-grid">
+      <div class="domain-card reveal"><div class="domain-icon">🏛</div><div class="domain-name">Community Leadership</div><div class="domain-desc">Four years leading student bodies, coordinating community programmes, and building inclusive teams — from class committee to Student Council Vice-President.</div></div>
+      <div class="domain-card reveal d1"><div class="domain-icon">🎙</div><div class="domain-name">Debate</div><div class="domain-desc">National semi-finalist, Best Speaker award, and team captain. Debate sharpened my reasoning, resilience, and ability to engage complex ideas from all angles.</div></div>
+      <div class="domain-card reveal d2"><div class="domain-icon">📚</div><div class="domain-name">Humanities</div><div class="domain-desc">Distinction in the Humanities Essay Prize and 2nd place in a national Social Studies competition — reflecting a passion for ideas and social inquiry.</div></div>
+    </div>
+  </div>
+  <div class="sec" style="border-bottom:none">
+    <div class="sec-tag">Timeline</div>
+    <h2 class="sec-h">Key milestones</h2>
+    <div class="tl-row reveal"><span class="tl-yr">2024</span><div><div class="tl-title">Student Council Vice-President</div><div class="tl-sub">[Your School]</div></div></div>
+    <div class="tl-row reveal"><span class="tl-yr">2023</span><div><div class="tl-title">Best Speaker — ISD Championship Quarterfinals</div><div class="tl-sub">Inter-School Debate Championship</div></div></div>
+    <div class="tl-row reveal"><span class="tl-yr">2023</span><div><div class="tl-title">Youth Connect Programme Co-founder</div><div class="tl-sub">Community outreach initiative</div></div></div>
+    <div class="tl-row reveal"><span class="tl-yr">2022</span><div><div class="tl-title">National Debate Championship Semi-finalist</div><div class="tl-sub">MOE National Debate</div></div></div>
+    <div class="tl-row reveal" style="border-bottom:none"><span class="tl-yr">2021</span><div><div class="tl-title">CCA Leader, [CCA Name]</div><div class="tl-sub">[Your School]</div></div></div>
+    <div style="margin-top:2rem"><button onclick="go('projects')" style="font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);background:none;border:none;cursor:pointer;padding:0">Full experience → Projects &amp; Experience</button></div>
+  </div>
+</div>
+
+<!-- ══════ PROJECTS ══════ -->
+<div class="page" id="pg-projects">
+  <div class="pg-hero">
+    <div class="pg-hero-ghost">02</div>
+    <div class="crumb"><button data-p="home">Home</button><span class="sep"> / </span><span class="here">Projects &amp; Experience</span></div>
+    <h1 class="pg-title">Projects &amp; <i>Experience</i></h1>
+    <p class="pg-sub">Leadership roles, debate achievements, and initiatives I've built from scratch.</p>
+  </div>
+  <div class="sec" style="padding-bottom:0;border-bottom:none">
+    <div class="sec-tag">Initiatives &amp; Projects</div>
+    <h2 class="sec-h">What I've built</h2>
+  </div>
+  <div class="proj-grid">
+    <div class="proj-card wide reveal">
+      <div>
+        <div class="proj-type">🏛 Community Initiative · Featured</div>
+        <div class="proj-title">Youth Connect Programme</div>
+        <div class="proj-period">2022 – Present</div>
+        <div class="proj-desc">Co-founded a youth outreach programme connecting Secondary students with senior citizens through weekly conversation circles. Grew initiative across 3 schools.</div>
+      </div>
+      <div>
+        <ul class="proj-list"><li>Grew volunteer team from 8 to 15 members</li><li>Reached 60+ senior beneficiaries over 2 years</li><li>Partnered with [Community Organisation]</li><li>Framework adopted by 2 other schools</li></ul>
+        <div class="proj-tags"><span class="chip chip-a">Community Leadership</span> <span class="chip">Programme Design</span> <span class="chip">Volunteer Mgmt</span></div>
+      </div>
+    </div>
+    <div class="proj-card reveal">
+      <div class="proj-type">🎙 Debate Project</div>
+      <div class="proj-title">Debate Training Framework</div>
+      <div class="proj-period">2023 – 2024</div>
+      <div class="proj-desc">As Captain, redesigned training for 20 debaters — introducing structured case prep, weekly rebuttal drills, and a junior mentorship programme.</div>
+      <ul class="proj-list"><li>Team reached national semi-finals for first time</li><li>3 juniors elevated to varsity team</li><li>Training manual adopted as school standard</li></ul>
+      <div class="proj-tags"><span class="chip chip-a">Team Leadership</span> <span class="chip">Curriculum Design</span> <span class="chip">Mentorship</span></div>
+    </div>
+    <div class="proj-card reveal d1">
+      <div class="proj-type">🌿 Environmental Project</div>
+      <div class="proj-title">School Sustainability Drive</div>
+      <div class="proj-period">2022</div>
+      <div class="proj-desc">Led a school-wide sustainability campaign — waste audit, recycling booth, and assembly presentation reaching 1,200 students. Partnered with external NGOs.</div>
+      <ul class="proj-list"><li>Reduced school plastic waste by ~15%</li><li>1,200+ students reached in assembly</li><li>Partnered with [NGO Name]</li></ul>
+      <div class="proj-tags"><span class="chip">Environmental Advocacy</span> <span class="chip chip-a">Community</span></div>
+    </div>
+    <div class="proj-card reveal">
+      <div class="proj-type">📚 Humanities Project</div>
+      <div class="proj-title">Oral History: Pioneer Generation</div>
+      <div class="proj-period">2023</div>
+      <div class="proj-desc">Interviewed 6 Pioneer Generation residents, producing a short documentary and written report on Singapore's development. Submitted to the National Archives.</div>
+      <ul class="proj-list"><li>6 in-depth interviews conducted</li><li>Documentary produced &amp; screened</li><li>Submitted to National Archives</li></ul>
+      <div class="proj-tags"><span class="chip">Research</span> <span class="chip">Humanities</span> <span class="chip chip-a">National Archives</span></div>
+    </div>
+  </div>
+  <div class="sec" style="background:var(--bg2)">
+    <div class="sec-tag">Debate Achievements</div>
+    <h2 class="sec-h">On the debate floor</h2>
+    <div class="deb-grid">
+      <div class="deb-card reveal"><div class="deb-icon">🏆</div><div class="deb-title">Inter-School Debate Championship</div><div class="deb-sub">Best Speaker · 2023</div><div class="deb-desc">Competed in British Parliamentary format. Reached semi-finals. Awarded Best Speaker in quarterfinals.</div></div>
+      <div class="deb-card reveal d1"><div class="deb-icon">🎙</div><div class="deb-title">MOE National Debate Championship</div><div class="deb-sub">Semi-Finalist · 2022</div><div class="deb-desc">First team from school to reach national semi-finals. Topics spanned economics, governance, and social policy.</div></div>
+      <div class="deb-card reveal d2"><div class="deb-icon">📣</div><div class="deb-title">School Debate Team Captain</div><div class="deb-sub">Captain · 2023–2024</div><div class="deb-desc">Led training for 20 debaters. Designed case prep workflows, mentored juniors, oversaw 4 external competitions.</div></div>
+    </div>
+  </div>
+  <div class="sec" style="border-bottom:none">
+    <div class="sec-tag">Leadership Roles</div>
+    <h2 class="sec-h">Positions held</h2>
+    <div class="roles-list">
+      <div class="role-row reveal"><span class="role-yr">2023–2024</span><span class="role-ic">🏛</span><div><div class="role-title">Vice-President, Student Council</div><div class="role-org">[Your School] · Led council of 30, school-wide events, mentorship for 200+ students</div></div><span class="role-badge">VP</span></div>
+      <div class="role-row reveal"><span class="role-yr">2023–2024</span><span class="role-ic">🎙</span><div><div class="role-title">Debate Team Captain</div><div class="role-org">[Your School] · 20-member team, 4 external competitions</div></div><span class="role-badge">Captain</span></div>
+      <div class="role-row reveal"><span class="role-yr">2022–2023</span><span class="role-ic">📋</span><div><div class="role-title">Class Committee Chairperson</div><div class="role-org">[Your School] · Sec 3 · Liaison between students and teachers</div></div><span class="role-badge">Chair</span></div>
+      <div class="role-row reveal"><span class="role-yr">2022–now</span><span class="role-ic">🤝</span><div><div class="role-title">Youth Volunteer Coordinator</div><div class="role-org">[Community Organisation] · 15 volunteers, designed activity programme</div></div><span class="role-badge">Coordinator</span></div>
+      <div class="role-row reveal"><span class="role-yr">2021–2022</span><span class="role-ic">⭐</span><div><div class="role-title">CCA Leader, [CCA Name]</div><div class="role-org">[Your School] · 40-member CCA, inter-school competitions</div></div><span class="role-badge">Leader</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ SKILLS ══════ -->
+<div class="page" id="pg-skills">
+  <div class="pg-hero">
+    <div class="pg-hero-ghost">03</div>
+    <div class="crumb"><button data-p="home">Home</button><span class="sep"> / </span><span class="here">Skills</span></div>
+    <h1 class="pg-title">My <i>Skills</i></h1>
+    <p class="pg-sub">Competencies built through years of leading, debating, and serving.</p>
+  </div>
+  <div class="sec">
+    <div class="skill-group reveal">
+      <div class="skill-group-h"><span class="skill-group-title">🎙 Debate &amp; Communication</span><span class="skill-group-count">6 skills</span></div>
+      <div class="skill-rows">
+        <div class="skill-row" style="--w:92%"><span class="skill-label">Argumentation &amp; Logic</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">92</span></div>
+        <div class="skill-row" style="--w:90%"><span class="skill-label">Persuasive Speaking</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">90</span></div>
+        <div class="skill-row" style="--w:88%"><span class="skill-label">Rebuttal &amp; Cross-examination</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">88</span></div>
+        <div class="skill-row" style="--w:85%"><span class="skill-label">Research &amp; Case Building</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">85</span></div>
+        <div class="skill-row" style="--w:83%"><span class="skill-label">Written Communication</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">83</span></div>
+        <div class="skill-row" style="--w:80%"><span class="skill-label">Active Listening</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">80</span></div>
+      </div>
+    </div>
+    <div class="skill-group reveal">
+      <div class="skill-group-h"><span class="skill-group-title">🏛 Leadership &amp; Organisation</span><span class="skill-group-count">5 skills</span></div>
+      <div class="skill-rows">
+        <div class="skill-row" style="--w:90%"><span class="skill-label">Team Leadership</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">90</span></div>
+        <div class="skill-row" style="--w:87%"><span class="skill-label">Event Management</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">87</span></div>
+        <div class="skill-row" style="--w:84%"><span class="skill-label">Stakeholder Engagement</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">84</span></div>
+        <div class="skill-row" style="--w:80%"><span class="skill-label">Strategic Planning</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">80</span></div>
+        <div class="skill-row" style="--w:78%"><span class="skill-label">Conflict Resolution</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">78</span></div>
+      </div>
+    </div>
+    <div class="skill-group reveal" style="margin-bottom:0">
+      <div class="skill-group-h"><span class="skill-group-title">📚 Academic &amp; Humanities</span><span class="skill-group-count">4 skills</span></div>
+      <div class="skill-rows">
+        <div class="skill-row" style="--w:88%"><span class="skill-label">Critical Thinking</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">88</span></div>
+        <div class="skill-row" style="--w:85%"><span class="skill-label">Essay Writing</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">85</span></div>
+        <div class="skill-row" style="--w:80%"><span class="skill-label">Historical Analysis</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">80</span></div>
+        <div class="skill-row" style="--w:75%"><span class="skill-label">Social Research Methods</span><div class="skill-track"><div class="skill-bar"></div></div><span class="skill-val">75</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-tag">Soft Skills</div>
+    <h2 class="sec-h">Core strengths</h2>
+    <div class="soft-grid">
+      <div class="soft-card reveal"><div class="soft-icon">🧭</div><div class="soft-name">Adaptability</div><div class="soft-desc">Switching between leading large groups, speaking publicly, and working one-on-one with community members.</div></div>
+      <div class="soft-card reveal d1"><div class="soft-icon">🤝</div><div class="soft-name">Empathy</div><div class="soft-desc">Built through volunteer work with seniors and lower-income youth — listening deeply before acting.</div></div>
+      <div class="soft-card reveal d2"><div class="soft-icon">⚡</div><div class="soft-name">Initiative</div><div class="soft-desc">Co-founded Youth Connect and redesigned the debate training framework — both without being asked.</div></div>
+      <div class="soft-card reveal d3"><div class="soft-icon">🔥</div><div class="soft-name">Resilience</div><div class="soft-desc">Competed and lost at national level, rebuilt the team, returned stronger. Failure as fuel.</div></div>
+      <div class="soft-card reveal"><div class="soft-icon">🎯</div><div class="soft-name">Goal Orientation</div><div class="soft-desc">Every project I lead starts with a clear outcome — from volunteer targets to debate training milestones.</div></div>
+      <div class="soft-card reveal d1"><div class="soft-icon">🌐</div><div class="soft-name">Cultural Awareness</div><div class="soft-desc">Working with diverse communities has deepened my sensitivity to different backgrounds and perspectives.</div></div>
+      <div class="soft-card reveal d2"><div class="soft-icon">💬</div><div class="soft-name">Communication</div><div class="soft-desc">From debate halls to community centres — I adapt my language to connect with any audience.</div></div>
+      <div class="soft-card reveal d3"><div class="soft-icon">📐</div><div class="soft-name">Structured Thinking</div><div class="soft-desc">From debate case prep to event logistics — I break complex challenges into clear, executable steps.</div></div>
+    </div>
+  </div>
+  <div class="sec" style="background:var(--bg2)">
+    <div class="sec-tag">Languages</div>
+    <h2 class="sec-h">Communication</h2>
+    <div class="lang-grid">
+      <div class="lang-card reveal"><div class="lang-name">English</div><div class="lang-level">Native / Fluent</div><div class="lang-dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div></div></div>
+      <div class="lang-card reveal d1"><div class="lang-name">[Mother Tongue]</div><div class="lang-level">Proficient</div><div class="lang-dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div></div></div>
+      <div class="lang-card reveal d2"><div class="lang-name">[Optional 3rd]</div><div class="lang-level">Conversational</div><div class="lang-dots"><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div></div>
+    </div>
+  </div>
+  <div class="sec" style="border-bottom:none">
+    <div class="sec-tag">Tools &amp; Platforms</div>
+    <h2 class="sec-h">What I work with</h2>
+    <div class="tools-wrap">
+      <span class="tool">Google Workspace</span><span class="tool">Microsoft Office</span><span class="tool">Canva</span><span class="tool">British Parliamentary Debate</span><span class="tool">Asian Parliamentary Debate</span><span class="tool">Public Speaking</span><span class="tool">Event Planning</span><span class="tool">Workshop Facilitation</span><span class="tool">Research &amp; Citation</span><span class="tool">Report Writing</span><span class="tool">Team Coordination</span><span class="tool">Social Media</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ SERVICE ══════ -->
+<div class="page" id="pg-service">
+  <div class="pg-hero">
+    <div class="pg-hero-ghost">04</div>
+    <div class="crumb"><button data-p="home">Home</button><span class="sep"> / </span><span class="here">Community Service</span></div>
+    <h1 class="pg-title">Community <i>Service</i></h1>
+    <p class="pg-sub">120+ hours of meaningful service — because leadership without giving back is incomplete.</p>
+  </div>
+  <div class="impact-grid">
+    <div class="impact-cell reveal"><div class="impact-n">120+</div><div class="impact-l">Total Hours</div></div>
+    <div class="impact-cell reveal d1"><div class="impact-n">60+</div><div class="impact-l">Beneficiaries</div></div>
+    <div class="impact-cell reveal d2"><div class="impact-n">4</div><div class="impact-l">Organisations</div></div>
+    <div class="impact-cell reveal d3"><div class="impact-n">3</div><div class="impact-l">Years Active</div></div>
+  </div>
+  <div class="svc-grid">
+    <div class="svc-card reveal"><div class="svc-hrs">48</div><div class="svc-hrs-l">hours of service</div><div class="svc-title">Youth Connect Programme</div><div class="svc-org">Community Youth Club</div><div class="svc-desc">Co-founded and led a youth outreach initiative connecting Secondary students with senior citizens through weekly conversation circles. Grew programme across 3 schools.</div><div class="svc-period">2022 – Present · Programme Founder &amp; Lead</div></div>
+    <div class="svc-card reveal d1"><div class="svc-hrs">36</div><div class="svc-hrs-l">hours of service</div><div class="svc-title">Reading Buddies Programme</div><div class="svc-org">National Library Board</div><div class="svc-desc">Volunteered as a Reading Buddy for children from lower-income families, running weekly one-on-one reading sessions. Measurable improvements in comprehension over 3 months.</div><div class="svc-period">2022 – 2023 · Volunteer Tutor</div></div>
+    <div class="svc-card reveal"><div class="svc-hrs">24</div><div class="svc-hrs-l">hours of service</div><div class="svc-title">School Sustainability Drive</div><div class="svc-org">[Your School] Environmental Committee</div><div class="svc-desc">Led a school-wide sustainability campaign — waste audit, recycling booth, and assembly presentation reaching 1,200 students. Partnered with external NGOs.</div><div class="svc-period">2022 · Committee Lead</div></div>
+    <div class="svc-card reveal d1"><div class="svc-hrs">12</div><div class="svc-hrs-l">hours of service</div><div class="svc-title">Flag Day Coordinator</div><div class="svc-org">Yellow Ribbon Singapore</div><div class="svc-desc">Coordinated 20 student volunteers for Yellow Ribbon Flag Day. Organised briefings, logistics, route assignments, and a post-event reflection session.</div><div class="svc-period">2023 · Volunteer Coordinator</div></div>
+  </div>
+  <div class="sec" style="background:var(--bg2)">
+    <div class="sec-tag">Personal Reflection</div>
+    <div class="ref-grid">
+      <div class="ref-quote reveal">"Service isn't something I do <em>alongside</em> leadership — it's what makes leadership <em>meaningful.</em>"</div>
+      <div class="ref-body reveal d2"><p>Every hour I've spent volunteering has changed the way I lead. Sitting with elderly residents taught me that presence — not programmes — is what builds trust. Teaching younger children to read reminded me how much patience real impact requires.</p><p>Community service shaped my leadership philosophy: before making decisions for others, you must first understand their lives. I carry that into every role I take on.</p></div>
+    </div>
+  </div>
+  <div class="sec" style="border-bottom:none">
+    <div class="sec-tag">VIA Log</div>
+    <h2 class="sec-h">Complete record</h2>
+    <div class="via-row reveal"><span class="via-yr">2022–24</span><div><div class="via-name">Youth Connect Programme</div><div class="via-org-s">Community Youth Club</div></div><span class="via-h">48 hrs</span></div>
+    <div class="via-row reveal"><span class="via-yr">2022–23</span><div><div class="via-name">Reading Buddies</div><div class="via-org-s">National Library Board</div></div><span class="via-h">36 hrs</span></div>
+    <div class="via-row reveal"><span class="via-yr">2022</span><div><div class="via-name">Sustainability Drive</div><div class="via-org-s">[Your School] — Environmental Committee</div></div><span class="via-h">24 hrs</span></div>
+    <div class="via-row reveal"><span class="via-yr">2023</span><div><div class="via-name">Flag Day</div><div class="via-org-s">Yellow Ribbon Singapore</div></div><span class="via-h">12 hrs</span></div>
+    <div class="via-row reveal" style="border-bottom:none"><span class="via-yr" style="color:var(--ink);font-weight:600">Total</span><div><div class="via-name" style="color:var(--accent)">Community Service Hours</div></div><span class="via-h" style="color:var(--accent);font-weight:700">120+ hrs</span></div>
+  </div>
+</div>
+
+<!-- ══════ AWARDS ══════ -->
+<div class="page" id="pg-awards">
+  <div class="pg-hero">
+    <div class="pg-hero-ghost">05</div>
+    <div class="crumb"><button data-p="home">Home</button><span class="sep"> / </span><span class="here">Awards &amp; Recognition</span></div>
+    <h1 class="pg-title">Awards &amp; <i>Recognition</i></h1>
+    <p class="pg-sub">Honours earned across leadership, debate, service, and the humanities.</p>
+  </div>
+  <div class="feat-aw">
+    <div class="reveal">
+      <div class="feat-yr">2024 · Featured Award</div>
+      <h2 class="feat-title">Outstanding Youth in Service Award</h2>
+      <div class="feat-org">Ministry of Education, Singapore</div>
+      <p class="feat-desc">Awarded annually by MOE to students who demonstrate exceptional dedication to community service and youth leadership. Recognised for co-founding Youth Connect and contributing 120+ hours of service over 3 years.</p>
+    </div>
+    <div class="aw-circle-wrap reveal d2">
+      <div class="aw-circle">
+        <div class="aw-circle-icon">🏆</div>
+        <div class="aw-circle-name">Outstanding Youth in Service</div>
+      </div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="sec-tag">Full Record</div>
+    <h2 class="sec-h">All awards &amp; honours</h2>
+    <div class="aw-list">
+      <div class="aw-row reveal"><span class="aw-yr">2024</span><span class="aw-ic">🏆</span><div><div class="aw-name">Outstanding Youth in Service Award</div><div class="aw-org">Ministry of Education, Singapore</div></div><span class="badge bg">Gold</span></div>
+      <div class="aw-row reveal"><span class="aw-yr">2023</span><span class="aw-ic">🎙</span><div><div class="aw-name">Best Speaker — ISD Championship Quarterfinals</div><div class="aw-org">Inter-School Debate Championship</div></div><span class="badge bg">Best Speaker</span></div>
+      <div class="aw-row reveal"><span class="aw-yr">2023</span><span class="aw-ic">📝</span><div><div class="aw-name">Humanities Essay Prize — Distinction</div><div class="aw-org">[Your School]</div></div><span class="badge bg">Distinction</span></div>
+      <div class="aw-row reveal"><span class="aw-yr">2023</span><span class="aw-ic">📚</span><div><div class="aw-name">National Social Studies Competition — 2nd Place</div><div class="aw-org">MOE · 40 schools, 180 entries</div></div><span class="badge bs">2nd Place</span></div>
+      <div class="aw-row reveal"><span class="aw-yr">2022</span><span class="aw-ic">🎙</span><div><div class="aw-name">National Debate Championship — Semi-Finalist</div><div class="aw-org">MOE National Debate</div></div><span class="badge bs">Semi-Finalist</span></div>
+      <div class="aw-row reveal"><span class="aw-yr">2022</span><span class="aw-ic">⭐</span><div><div class="aw-name">Most Improved Leader</div><div class="aw-org">[Your School] Student Council</div></div><span class="badge bs">Council</span></div>
+      <div class="aw-row reveal" style="border-bottom:none"><span class="aw-yr">2021–24</span><span class="aw-ic">🦅</span><div><div class="aw-name">EAGLES Award — Leadership</div><div class="aw-org">MOE Singapore · Awarded annually 2021–2024</div></div><span class="badge bg">4× Award</span></div>
+    </div>
+  </div>
+  <div class="sec" style="background:var(--bg2);border-bottom:none">
+    <div class="sec-tag">Further Recognition</div>
+    <h2 class="sec-h">Beyond the trophies</h2>
+    <div class="recog-grid">
+      <div class="recog-card reveal"><div class="recog-yr">2023 · Debate</div><div class="recog-title">Team Captain Recognition</div><div class="recog-body">First student to simultaneously hold Captain and Best Speaker in the same season. Cited for rebuilding team culture.</div></div>
+      <div class="recog-card reveal d1"><div class="recog-yr">2023 · Humanities</div><div class="recog-title">School Magazine Feature</div><div class="recog-body">Commentary on youth mental health published in school magazine. Sparked dialogue contributing to a pilot peer support programme.</div></div>
+      <div class="recog-card reveal d2"><div class="recog-yr">2023 · Community</div><div class="recog-title">National Archives Submission</div><div class="recog-body">Oral history project on Pioneer Generation residents accepted by the National Archives of Singapore.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ CONTACT ══════ -->
+<div class="page" id="pg-contact">
+  <div class="contact-hero">
+    <div class="contact-bg"></div>
+    <h1 class="contact-hl" style="opacity:0;animation:fadeUp .7s ease .1s forwards">
+      <span class="c1">Let's start</span>
+      <span class="c2">a real</span>
+      <span class="c3">conversation.</span>
+    </h1>
+    <p class="contact-sub" style="opacity:0;animation:fadeUp .6s ease .35s forwards">Open to connecting with JC admissions teams, teachers, mentors, and anyone passionate about community leadership and education in Singapore.</p>
+    <div class="contact-btns" style="opacity:0;animation:fadeUp .6s ease .55s forwards">
+      <a href="mailto:yourname@email.com" class="cbtn cbtn-p">✉ Send an email</a>
+      <a href="https://linkedin.com/in/yourname" target="_blank" rel="noopener" class="cbtn cbtn-o">↗ LinkedIn</a>
+      <a href="#" class="cbtn cbtn-o">⬇ Download CV</a>
+    </div>
+  </div>
+  <div class="cc-grid">
+    <a href="mailto:yourname@email.com" class="cc-card reveal"><span class="cc-icon">✉</span><span class="cc-type">Email</span><span class="cc-val">yourname@email.com</span><span class="cc-hint">Best way to reach me · Reply within 24 hrs</span></a>
+    <a href="https://linkedin.com/in/yourname" target="_blank" rel="noopener" class="cc-card reveal d1"><span class="cc-icon">💼</span><span class="cc-type">LinkedIn</span><span class="cc-val">linkedin.com/in/yourname</span><span class="cc-hint">Connect with me professionally</span></a>
+    <a href="https://wa.me/6591234567" target="_blank" rel="noopener" class="cc-card reveal d2"><span class="cc-icon">💬</span><span class="cc-type">WhatsApp</span><span class="cc-val">+65 9123 4567</span><span class="cc-hint">For quick questions or informal chats</span></a>
+  </div>
+  <div class="ci-grid">
+    <div class="reveal">
+      <div class="ci-head">About This Portfolio</div>
+      <div class="ci-body">
+        <p>This portfolio accompanies my DSA application to Junior College in 2025. It documents my leadership journey, community service, debate achievements, and academic work in the humanities.</p>
+        <p>I hope it gives you a genuine sense of who I am — beyond a transcript.</p>
+      </div>
+      <div class="ci-rows">
+        <div class="ci-row"><span class="ci-lbl">School</span><span class="ci-val">[Your Secondary School]</span></div>
+        <div class="ci-row"><span class="ci-lbl">Year</span><span class="ci-val">Secondary 4, 2024</span></div>
+        <div class="ci-row"><span class="ci-lbl">DSA Domains</span><span class="ci-val">Community Leadership · Debate</span></div>
+        <div class="ci-row"><span class="ci-lbl">Target JC</span><span class="ci-val">[Target JC 1] · [Target JC 2]</span></div>
+      </div>
+    </div>
+    <div class="reveal d2">
+      <div class="ci-head">What I'm Looking For</div>
+      <div class="ci-body">
+        <p>A JC environment that challenges me intellectually, fosters genuine community leadership, and gives me space to grow as a debater, thinker, and contributor.</p>
+        <p>I'm drawn to schools with strong debate programmes, active student leadership structures, and a culture that values both academic excellence and character development.</p>
+        <p>If you'd like to know more, I'd genuinely love to have a conversation.</p>
+      </div>
+    </div>
+  </div>
+  <div class="sec" style="border-bottom:none">
+    <div class="sec-tag">Navigate</div>
+    <h2 class="sec-h">Explore the portfolio</h2>
+    <div class="page-nav-grid">
+      <button class="pnc reveal" data-p="about"><div class="pnc-n">01</div><div class="pnc-tag">Profile</div><div class="pnc-name">About Me</div><div class="pnc-arr">↗</div></button>
+      <button class="pnc reveal d1" data-p="projects"><div class="pnc-n">02</div><div class="pnc-tag">Projects</div><div class="pnc-name">Projects &amp; Experience</div><div class="pnc-arr">↗</div></button>
+      <button class="pnc reveal d2" data-p="skills"><div class="pnc-n">03</div><div class="pnc-tag">Abilities</div><div class="pnc-name">Skills</div><div class="pnc-arr">↗</div></button>
+      <button class="pnc reveal d3" data-p="service"><div class="pnc-n">04</div><div class="pnc-tag">VIA</div><div class="pnc-name">Community Service</div><div class="pnc-arr">↗</div></button>
+      <button class="pnc reveal d4" data-p="awards"><div class="pnc-n">05</div><div class="pnc-tag">Honours</div><div class="pnc-name">Awards &amp; Recognition</div><div class="pnc-arr">↗</div></button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<footer id="foot">
+  <span class="foot-copy">[Your Name] · DSA Portfolio · JC 2025</span>
+  <nav class="foot-links">
+    <button data-p="about">About</button>
+    <button data-p="projects">Projects</button>
+    <button data-p="skills">Skills</button>
+    <button data-p="service">Service</button>
+    <button data-p="awards">Awards</button>
+    <button data-p="contact">Contact</button>
+  </nav>
+</footer>
+
+<script>
+(function(){
+  var PAGES = ['home','about','projects','skills','service','awards','contact'];
+  var cur = 'home';
+
+  function go(page) {
+    if (PAGES.indexOf(page) === -1) return;
+    var prev = document.getElementById('pg-' + cur);
+    if (prev) prev.classList.remove('active');
+    var next = document.getElementById('pg-' + page);
+    if (next) next.classList.add('active');
+    cur = page;
+    // update active state on all nav buttons
+    document.querySelectorAll('[data-p]').forEach(function(el) {
+      el.classList.toggle('active', el.getAttribute('data-p') === page);
+    });
+    window.scrollTo(0, 0);
+    history.pushState({page: page}, '', page === 'home' ? location.pathname : '#' + page);
+    setTimeout(runReveal, 80);
+    document.getElementById('mobMenu').classList.remove('open');
+  }
+
+  // expose globally for inline onclick
+  window.go = go;
+
+  // click delegation
+  document.addEventListener('click', function(e) {
+    var el = e.target.closest('[data-p]');
+    if (el) { e.preventDefault(); go(el.getAttribute('data-p')); }
+  });
+
+  // back/forward
+  window.addEventListener('popstate', function(e) {
+    var page = (e.state && e.state.page) || (location.hash.slice(1)) || 'home';
+    if (PAGES.indexOf(page) !== -1) go(page);
+  });
+
+  // nav scroll shadow
+  window.addEventListener('scroll', function() {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 8);
+  }, {passive: true});
+
+  // burger
+  document.getElementById('burger').addEventListener('click', function() {
+    document.getElementById('mobMenu').classList.toggle('open');
+  });
+
+  // reveal on scroll
+  var revObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) e.target.classList.add('in');
+    });
+  }, {threshold: 0.08});
+
+  // skill bar reveal
+  var skillObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) e.target.classList.add('in');
+    });
+  }, {threshold: 0.2});
+
+  function runReveal() {
+    document.querySelectorAll('#pg-' + cur + ' .reveal').forEach(function(el) {
+      revObs.unobserve(el);
+      revObs.observe(el);
+    });
+    document.querySelectorAll('#pg-' + cur + ' .skill-row').forEach(function(el) {
+      skillObs.unobserve(el);
+      skillObs.observe(el);
+    });
+  }
+
+  // init
+  var hash = location.hash.slice(1);
+  var start = PAGES.indexOf(hash) !== -1 ? hash : 'home';
+  document.getElementById('pg-' + start).classList.add('active');
+  cur = start;
+  document.querySelectorAll('[data-p="' + start + '"]').forEach(function(el) {
+    el.classList.add('active');
+  });
+  setTimeout(runReveal, 80);
+})();
+</script>
+</body>
+</html>
